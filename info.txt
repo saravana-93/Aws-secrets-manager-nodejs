@@ -1,0 +1,29 @@
+1.start-with-secrets.sh
+
+Without this script, Node application-ku Secrets Manager-la irundhu credentials edukkanum-na code change pannirukkanum. Indha wrapper approach-la application code change pannaama, startup-ku munnaadi environment variables set pannitu app-a start pannrom. Idhu dhaan indha start-with-secrets.sh-oda main purpose.
+
+2.
+AWS Secrets Manager-ku 80 lines, 100 lines, 200 lines nu line limit kidaiyadhu.
+Mukkiyam total size 64 KB-kulla irukkanum.
+
+3.
+| **Number of Secrets**   | Store pannra ovvoru secret-kum monthly charge                                           
+| **API Requests**        | `GetSecretValue`, `PutSecretValue`, etc. evlo calls pannuringalo atha base panni charge 
+| **Rotation (Optional)** | Automatic rotation enable pannina, Lambda usage irundha additional cost varalam         
+
+Secrets Manager Cost = Secret Storage Cost + API Request Cost + (Optional) Rotation-related Cost
+
+4.
+PM2 ippo Node application-a start pannala, start-with-secrets.sh-a dhaan start pannudhu.
+
+pm2 start /var/www/carebridge-backend/start-with-secrets.sh \
+  --name carebridge-backend \
+  --interpreter /bin/bash
+
+Adhanala dhaan namma wrapper use pannom. Future-la secret update pannina, application code change panna vendam. pm2 restart carebridge-backend pannina podhum; wrapper latest AWSCURRENT secret-a retrieve panni app-a start pannidum.
+
+5.
+So AWS cost depends on:
+✅ Ethana Secrets store pannirukkinga.
+✅ Ethana API requests (GetSecretValue, PutSecretValue, etc.) pannuringa.
+❌ 50 KB, 20 KB, 10 KB nu size base panni charge illa (64 KB maximum limit-kulla irundha).
